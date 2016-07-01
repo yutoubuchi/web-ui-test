@@ -1,0 +1,65 @@
+*** Settings ***
+Library           Selenium2Library
+
+*** Keywords ***
+登录
+    [Arguments]    ${username}    ${password}
+    open browser    ${domain}/live/pc/index.html#/m/square    chrome
+    Set Window Size    1680    1050
+    Set Selenium Implicit Wait    10
+    click element    css=#j-head > div.n-head-wrap > div > div.list-right > a.item.f-login
+    input text    name=phoneNumber    ${username}
+    input text    xpath=//*[@id="j-c"]/div[1]/div[1]/div[2]/input    ${password}
+    click element    css=#j-c > div.n-cbt > div > a
+    [Teardown]
+
+易信第三方登录
+    [Arguments]    ${username}    ${password}    ${testname}
+    open browser    ${domain}/live/pc/index.html#/m/square    chrome
+    Maximize Browser Window
+    Set Selenium Implicit Wait    10
+    click element    css=#j-head > div.n-head-wrap > div > div.list-right > a.item.f-login
+    click element    css=#j-c > div.n-third.f-cb > div.n-bottom.f-cb > tr > a:nth-child(3) > td > div.u-logo.u-logo3
+    input text    css=#p-loginForm-phone    ${username}
+    input text    css=#p-loginForm-password    ${password}
+    click button    css=#p-loginForm-submit
+    sleep    2
+    click element    css=#j-head > div.n-head-wrap > div > div.list-right > div > a.indicator
+    ${yourname}    get text    CSS=body > div > div.m-frame > div.n-body.j-body > div > div > div.n-center > div.n-right > div > div > div > div > div > div.n-content > div > div:nth-child(2) > div.u-fmgp-i.n-nick
+    Run Keyword And Continue On Failure    should contain    ${yourname}    ${testname}
+    close browser
+
+网易账号登录
+    [Arguments]    ${username}    ${password}    ${testname}
+    open browser    ${domain}/live/pc/index.html#/m/square    chrome
+    Maximize Browser Window
+    Set Selenium Implicit Wait    10
+    click element    css=#j-head > div.n-head-wrap > div > div.list-right > a.item.f-login
+    click element    css=#login > td > div.u-logo.u-logo1
+    select frame    id=x-URS-iframe
+    Run Keyword And Continue On Failure    input text    name=email    ${username}
+    Run Keyword And Continue On Failure    input text    name=password    ${password}
+    Run Keyword And Continue On Failure    click element    css=#dologin
+    unselect frame
+    click element    css=#j-head > div.n-head-wrap > div > div.list-right > div > a.indicator
+    ${yourname}    get text    CSS=body > div > div.m-frame > div.n-body.j-body > div > div > div.n-center > div.n-right > div > div > div > div > div > div.n-content > div > div:nth-child(2) > div.u-fmgp-i.n-nick
+    Run Keyword And Continue On Failure    should contain    ${yourname}    ${testname}
+    close browser
+
+微信登录标题
+    open browser    ${domain}/live/pc/index.html#/m/square    chrome
+    Maximize Browser Window
+    Set Selenium Implicit Wait    10
+    click element    css=#j-head > div.n-head-wrap > div > div.list-right > a.item.f-login
+    click element    css=#j-c > div.n-third.f-cb > div.n-bottom.f-cb > tr > a:nth-child(2) > td > div.u-logo.u-logo2
+    sleep    1
+    ${gettitle}    get title
+    should contain    ${gettitle}    微信登录
+    [Teardown]    close browser
+
+获取姓名
+    ${value1}=    getkey    ${domain}/live/square/market/activity/list?activityType=1&cancel=0&tm=1463475753752
+    ${a}=    Get From Dictionary    ${value1.text}    result
+    ${b}=    get from list    ${a}    0
+    ${coenter}=    Get From Dictionary    ${b}    name
+    [Return]    ${coenter}

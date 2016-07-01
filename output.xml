@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generated="20160613 15:59:49.212" generator="Robot 2.8.5 (Python 2.7.11 on win32)">
+<suite source="D:\phthon2.7\Scripts\object\qingguo" id="s1" name="Qingguo">
+<suite source="D:\phthon2.7\Scripts\object\qingguo\售卖部分.txt" id="s1-s1" name="售卖部分">
+<test id="s1-s1-t1" name="购买流程">
+<kw type="kw" name="购买.购买">
+<doc></doc>
+<arguments>
+<arg>15268521243</arg>
+<arg>123123</arg>
+<arg>199</arg>
+</arguments>
+<kw type="kw" name="登录关键词.登录">
+<doc></doc>
+<arguments>
+<arg>${username}</arg>
+<arg>${password}</arg>
+</arguments>
+<kw type="kw" name="Selenium2Library.Open Browser">
+<doc>Opens a new browser instance to given URL.</doc>
+<arguments>
+<arg>${domain}/live/pc/index.html#/m/square</arg>
+<arg>chrome</arg>
+</arguments>
+<msg timestamp="20160613 15:59:49.426" level="INFO">Opening browser 'chrome' to base url 'https://smartcameratest2.x.163.com/live/pc/index.html#/m/square'</msg>
+<status status="PASS" endtime="20160613 15:59:52.552" starttime="20160613 15:59:49.425"></status>
+</kw>
+<kw type="kw" name="Selenium2Library.Set Window Size">
+<doc>Sets the `width` and `height` of the current window to the specified values.</doc>
+<arguments>
+<arg>1680</arg>
+<arg>1050</arg>
+</arguments>

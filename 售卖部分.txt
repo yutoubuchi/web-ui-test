@@ -1,0 +1,82 @@
+*** Settings ***
+Library           Selenium2Library
+Library           Testlibrary
+Library           Collections
+Resource          步骤驱动关键字/登录关键词.txt
+Resource          步骤驱动关键字/购买.txt
+
+*** Variables ***
+${domain}         https://smartcameratest2.x.163.com
+${username}       15268521112
+${password}       123123
+
+*** Test Cases ***
+购买流程
+    [Timeout]
+    购买    ${username}    ${password}    199
+    [Teardown]    close browser
+
+发货前退款
+    登录    ${username}    ${password}
+    Set Selenium Implicit Wait    30
+    go to    https://smartcameratest2.x.163.com/buy/index.html#/m/apps/user/orders/list
+    Click Element    css=body > div:nth-child(6) > div.m-frame > div.n-body.j-body > div > div > div.n-center > div.n-right > div > div > div > div > div > div.n-datac > table:nth-child(1) > tbody > tr:nth-child(2) > td.u-tac.n-part > a
+    Click Element    xpath=/html/body/div[2]/div[2]/div/div/div/a[1]
+    sleep    10
+    ${txt}    get text    css=body > div:nth-child(6) > div.m-frame > div.n-body.j-body > div > div > div.n-center > div.n-right > div > div > div > div > div > div.n-datac > table:nth-child(1) > tbody > tr:nth-child(2) > td.u-tac.n-part > a
+    Should Contain    ${txt}    取消申请退款
+    [Teardown]    close browser
+
+取消发货前退款
+    登录    ${username}    ${password}
+    Set Selenium Implicit Wait    30
+    go to    https://smartcameratest2.x.163.com/buy/index.html#/m/apps/user/orders/list
+    Click Element    css=body > div:nth-child(6) > div.m-frame > div.n-body.j-body > div > div > div.n-center > div.n-right > div > div > div > div > div > div.n-datac > table:nth-child(1) > tbody > tr:nth-child(2) > td.u-tac.n-part > a
+    Click Element    xpath=/html/body/div[2]/div[2]/div/div/div/a[1]
+    ${txt}    get text    css=body > div:nth-child(6) > div.m-frame > div.n-body.j-body > div > div > div.n-center > div.n-right > div > div > div > div > div > div.n-datac > table:nth-child(1) > tbody > tr:nth-child(2) > td.u-tac.n-part > a
+    Should Contain    ${txt}    申请退款
+    [Teardown]    close browser
+
+申请退货
+    [Setup]    Getcookie
+    购买    ${username}    ${password}    199
+    Set Selenium Implicit Wait    30
+    go to    https://smartcameratest2.x.163.com/buy/index.html#/m/apps/user/orders/list
+    ${txt}    get text    css=body > div > div.m-frame > div.n-body.j-body > div > div > div.n-center > div.n-right > div > div > div > div > div > div.n-datac > table:nth-child(1) > tbody > tr.n-baseinfo > td > span:nth-child(1)
+    ${a}    Evaluate    re.findall(r'\\d+','${txt}')    re
+    ${b}    get from list    ${a}    0
+    send    ${b}
+    sleep    20
+    go to    https://smartcameratest2.x.163.com/buy/index.html#/m/apps/user/orders/list
+    Click Element    css=body > div > div.m-frame > div.n-body.j-body > div > div > div.n-center > div.n-right > div > div > div > div > div > div.n-datac > table:nth-child(1) > tbody > tr:nth-child(2) > td.n-thpd > table > tbody > tr > td.n-part.n-oper.pd-20 > a:nth-child(1)
+    Click Element    css=body > div > div.m-frame > div.n-body.j-body > div > div > div.n-center > div.n-right > div > div > div > div > div > div.n-auor-c > div > div.n-bts > a.u-bt.style2.u-mgr4.big
+    Input Text    CSS=body > div > div.m-frame > div.n-body.j-body > div > div > div.n-center > div.n-right > div > div > div > div > div > div.n-auor-c > div > div > div:nth-child(6) > div > input    物流公司
+    Input Text    css=body > div > div.m-frame > div.n-body.j-body > div > div > div.n-center > div.n-right > div > div > div > div > div > div.n-auor-c > div > div > div:nth-child(7) > div > input    123456
+    Click Element    css=body > div > div.m-frame > div.n-body.j-body > div > div > div.n-center > div.n-right > div > div > div > div > div > div.n-auor-c > div > div > div.u-fmgp.u-mgt15.u-spbt > div > a.u-bt.style2.big
+    ${c}    get text    css=body > div:nth-child(6) > div.m-frame > div.n-body.j-body > div > div > div.n-center > div.n-right > div > div > div > div > div > div.n-datac > table:nth-child(1) > tbody > tr.n-baseinfo > td > span:nth-child(1)
+    ${d}    get text    css=body > div > div.m-frame > div.n-body.j-body > div > div > div.n-center > div.n-right > div > div > div > div > div > div.n-datac > table:nth-child(1) > tbody > tr:nth-child(2) > td.n-thpd > table > tbody > tr > td.n-part.n-oper.pd-20 > span > a
+    Should Contain    ${txt}    ${c}
+    Should Contain    ${d}    退货进行中
+    [Teardown]    close browser
+
+申请换货
+    [Setup]
+    购买    ${username}    ${password}    199
+    Set Selenium Implicit Wait    30
+    go to    https://smartcameratest2.x.163.com/buy/index.html#/m/apps/user/orders/list
+    ${txt}    get text    css=body > div > div.m-frame > div.n-body.j-body > div > div > div.n-center > div.n-right > div > div > div > div > div > div.n-datac > table:nth-child(1) > tbody > tr.n-baseinfo > td > span:nth-child(1)
+    ${a}    Evaluate    re.findall(r'\\d+','${txt}')    re
+    ${b}    get from list    ${a}    0
+    send    ${b}
+    sleep    20
+    go to    https://smartcameratest2.x.163.com/buy/index.html#/m/apps/user/orders/list
+    Click Element    css=body > div > div.m-frame > div.n-body.j-body > div > div > div.n-center > div.n-right > div > div > div > div > div > div.n-datac > table:nth-child(1) > tbody > tr:nth-child(2) > td.n-thpd > table > tbody > tr > td.n-part.n-oper.pd-20 > a:nth-child(2)
+    Click Element    css=body > div > div.m-frame > div.n-body.j-body > div > div > div.n-center > div.n-right > div > div > div > div > div > div.n-auor-c > div > div.n-bts > a.u-bt.style2.u-mgr4.big
+    Input Text    CSS=body > div > div.m-frame > div.n-body.j-body > div > div > div.n-center > div.n-right > div > div > div > div > div > div.n-auor-c > div > div > div:nth-child(5) > div > input    物流公司
+    Input Text    css=body > div > div.m-frame > div.n-body.j-body > div > div > div.n-center > div.n-right > div > div > div > div > div > div.n-auor-c > div > div > div:nth-child(6) > div > input    123456
+    Click Element    css=body > div > div.m-frame > div.n-body.j-body > div > div > div.n-center > div.n-right > div > div > div > div > div > div.n-auor-c > div > div > div.u-fmgp.u-mgt15.u-spbt > div > a.u-bt.style2.big
+    ${c}    get text    css=body > div:nth-child(6) > div.m-frame > div.n-body.j-body > div > div > div.n-center > div.n-right > div > div > div > div > div > div.n-datac > table:nth-child(1) > tbody > tr.n-baseinfo > td > span:nth-child(1)
+    ${d}    get text    css=body > div > div.m-frame > div.n-body.j-body > div > div > div.n-center > div.n-right > div > div > div > div > div > div.n-datac > table:nth-child(1) > tbody > tr:nth-child(2) > td.n-thpd > table > tbody > tr > td.n-part.n-oper.pd-20 > span > a
+    Should Contain    ${txt}    ${c}
+    Should Contain    ${d}    换货进行中
+    [Teardown]    close browser

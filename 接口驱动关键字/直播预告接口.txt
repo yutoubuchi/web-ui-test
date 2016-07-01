@@ -1,0 +1,15 @@
+*** Keywords ***
+获取直播预告标题
+    [Arguments]    ${tag}
+    ${value1}=    getkey    ${domain}/live/square/liveActivity/list?limit=&offset=0
+    ${a}=    Get From Dictionary    ${value1}    result
+    ${c}=    Get From Dictionary    ${a}    list
+    ${b}=    get from list    ${c}    ${tag}
+    ${coenter}=    Get From Dictionary    ${b}    title
+    [Return]    ${coenter}
+
+获取活动个数
+    ${value1}=    getkey    ${domain}/live/square/liveActivity/list?limit=&offset=0
+    ${a}=    Get From Dictionary    ${value1}    result
+    ${d}=    Get From Dictionary    ${a}    total
+    [Return]    ${d}

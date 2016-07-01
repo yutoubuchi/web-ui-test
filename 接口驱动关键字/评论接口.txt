@@ -1,0 +1,19 @@
+*** Settings ***
+Library           Testlibrary
+Library           BuiltIn
+Library           Collections
+
+*** Keywords ***
+获取评论个数
+    ${value1}=    getkey    ${domain}/live/webChat/chatList?id=${deviceId}&createTime=0&deviceId=${deviceId}
+    ${a}=    Get From Dictionary    ${value1}    result
+    ${numble}    Evaluate    len(${a})
+    [Return]    ${numble}
+
+获取最新评论内容
+    [Arguments]    ${numble}
+    ${value1}=    getkey    ${domain}/live/webChat/chatList?id=${deviceId}&createTime=0&deviceId=${deviceId}
+    ${a}=    Get From Dictionary    ${value1}    result
+    ${b}=    get from list    ${a}    ${numble}
+    ${c}=    Get From Dictionary    ${b}    chatContent
+    [Return]    ${c}

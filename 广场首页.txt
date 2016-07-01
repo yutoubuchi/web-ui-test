@@ -1,0 +1,75 @@
+*** Settings ***
+Library           Selenium2Library
+Resource          接口驱动关键字/活动接口.txt
+Resource          步骤驱动关键字/登录关键词.txt
+Resource          接口驱动关键字/直播预告接口.txt
+Library           Testlibrary
+Resource          接口驱动关键字/评论接口.txt
+
+*** Variables ***
+${domain}         https://smartcameratest2.x.163.com
+${deviceId}       163021505010619
+
+*** Test Cases ***
+官网账号登录
+    登录    15268521112    123123
+    Set Selenium Implicit Wait    30
+    click element    css=#j-head > div.n-head-wrap > div > div.list-right > div > a.indicator
+    ${yourname}    get text    CSS=body > div > div.m-frame > div.n-body.j-body > div > div > div.n-center > div.n-right > div > div > div > div > div > div.n-content > div > div:nth-child(2) > div.u-fmgp-i.n-nick
+    should contain    ${yourname}    yutoubuchi
+    [Teardown]    close browser
+
+易信第三方登录
+    易信第三方登录    15268521243    123123    芋头
+    [Teardown]    close browser
+
+网易账号
+    网易账号登录    yutoubuchi@163.com    wozaiao63    网易邮箱账号
+    [Teardown]    close browser
+
+专题接口
+    ${title1}=    专题接口    0    name
+    ${title2}=    专题接口    -1    name
+    open browser    ${domain}/live/pc/index.html#/m/square    chrome
+    Maximize Browser Window
+    sleep    2
+    Execute Javascript    document.body.scrollTop=1100
+    Set Selenium Implicit Wait    30
+    ${bl}=    contrast    ${title1}    ${title2}
+    run keyword if    '${bl}'=='true'    专题为1    ${title1}
+    ...    ELSE IF    '${bl}'=='flase'    专题为2
+    [Teardown]    close browser
+
+直播预告
+    ${numble}    获取活动个数
+    ${Looptime}    Evaluate    ${numble}/12
+    ${title}    获取直播预告标题    0
+    ${numble1}    Evaluate    ${numble}-1
+    ${title1}    获取直播预告标题    ${numble1}
+    open browser    ${domain}/live/pc/index.html#/m/events    chrome
+    Maximize Browser Window
+    Set Selenium Implicit Wait    30
+    ${title2}    get text    css=#j-main > div > li:nth-child(1) > a > div.u-title > tr > td > span
+    :FOR    ${i}    in range    ${Looptime}
+    \    Execute Javascript    document.body.scrollTop=5000
+    \    sleep    10
+    \    Run Keyword if    ${i}==${Looptime}    Exit For Loop
+    ${title3}    get text    css=#j-main > div > li:nth-child(${numble}) > a > div.u-title > tr > td > span
+    should contain    ${title}    ${title2}
+    should contain    ${title1}    ${title3}
+    [Teardown]    close browser
+
+评论验证
+    ${numble}    获取评论个数
+    ${numble1}    Evaluate    ${numble}+2
+    open browser    ${domain}/live/pc/index.html#/m/channel?id=${deviceId}    chrome
+    Maximize Browser Window
+    Set Selenium Implicit Wait    30
+    ${content}    Evaluate    random.choice ( ['apple', 'pear', 'peach', 'orange', 'lemon'] )    random
+    input text    css=#j-replyMessage    ${content}
+    click element    css=#j-send
+    ${pl}    run keyword if    ${numble}>=300    获取最新评论内容    300
+    ...    ELSE IF    ${numble}<300    获取最新评论内容    ${numble}
+    ${pl1}    get text    css=#j-response > div:nth-child(${numble1}) > div.chatContent
+    should contain    ${pl1}    ${pl}
+    [Teardown]    close browser

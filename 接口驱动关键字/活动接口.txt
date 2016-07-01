@@ -1,0 +1,26 @@
+*** Settings ***
+Library           BuiltIn
+Library           Collections
+Library           Selenium2Library
+
+*** Keywords ***
+专题接口
+    [Arguments]    ${tag}    ${contern}
+    ${value1}=    getkey    ${domain}/live/square/market/activity/list?activityType=1&cancel=0
+    ${a}=    Get From Dictionary    ${value1}    result
+    ${b}=    get from list    ${a}    ${tag}
+    ${contern}    Get From Dictionary    ${b}    ${contern}
+    [Return]    ${contern}
+
+专题为1
+    [Arguments]    ${title}
+    ${titel3}    get text    css=body > div.main > div.m-frame > div.n-body.j-body > div > div > div:nth-child(3) > a:nth-child(4) > div > div.active-info.dual > div.active-name
+    should contain    ${title}    ${titel3}
+
+专题为2
+    ${titel3}    get text    css=body > div.main > div.m-frame > div.n-body.j-body > div > div > div:nth-child(3) > a:nth-child(4) > div > div.active-info.single > div.active-name
+    ${titel4}    get text    css=body > div.main > div.m-frame > div.n-body.j-body > div > div > div:nth-child(3) > a:nth-child(5) > div > div.active-info.single > div.active-name
+    ${title5}=    专题接口    0    name
+    ${title6}=    专题接口    1    name
+    should contain    ${title5}    ${titel3}
+    should contain    ${title6}    ${titel4}

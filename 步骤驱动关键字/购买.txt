@@ -1,0 +1,22 @@
+*** Settings ***
+Library           Selenium2Library
+
+*** Keywords ***
+购买
+    [Arguments]    ${username}    ${password}    ${pay}
+    登录    ${username}    ${password}
+    Set Selenium Implicit Wait    10
+    go to    https://smartcameratest2.x.163.com/buy/index.html#/m/apps/front/mall/olive_standard
+    sleep    2
+    Execute Javascript    document.body.scrollTop=500
+    Click Element    css=body > div > div.m-frame > div.n-body.j-body > div > div > div > div > div > div > div.m-show.u-container.u-cb > div.m-opt > div.n-buy > a
+    Click Element    css=body > div > div.m-frame > div.n-body.j-body > div > div > div > div > div > div > div.m-account.u-cb > div.n-act > a
+    Execute Javascript    document.body.scrollTop=5000
+    Click Element    css=body > div > div.m-frame > div.n-body.j-body > div > div > div > div > div > div.m-total.u-cb > div > div.n-act > a
+    Click Element    css=body > div > div.m-frame > div.n-body.j-body > div > div > div > div > div > div.m-success.u-container > div:nth-child(3) > div.m-paylist.u-cb > span.pay-right > ul > li:nth-child(5)
+    Click Element    css=body > div > div.m-frame > div.n-body.j-body > div > div > div > div > div > div.m-success.u-container > div.m-account.u-cb > span.n-act > a.u-fmgp-bt.u-bt.style0.u-btn
+    sleep    4
+    Select Window    url=http://payments.163.com/testBank/testEW.jsp
+    Click Element    css=body > form > input[type="submit"]:nth-child(7)
+    ${txt}    get text    css=body > div > div.n-body.j-body > div > div > div > div > span.tips-right > ul.u-bb20 > li
+    Should Contain    ${txt}    支付成功！您已经成功支付 ${pay} 元
